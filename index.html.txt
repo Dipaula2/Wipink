@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Minha Coleção · WePink</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbf3f0; --bg2:#f5e6e0; --card:#fffaf9; --ink:#33202a; --ink-soft:#8a6f78;
+    --line:rgba(51,32,42,.10); --pink:#e0356f; --pink-soft:#fbd6e3; --pink-tint:#fdeef3;
+    --green:#1f9d6b; --green-soft:#d6f0e4; --slate:#7d8aa0; --slate-soft:#e7ebf2;
+    --shadow:0 10px 30px -12px rgba(91,30,55,.30); --shadow-sm:0 4px 14px -8px rgba(91,30,55,.35);
+    --radius:20px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:'Jost',system-ui,sans-serif; color:var(--ink);
+    background:
+      radial-gradient(120% 90% at 15% -10%, #ffe6ef 0%, transparent 55%),
+      radial-gradient(120% 90% at 100% 0%, #ffeede 0%, transparent 50%),
+      var(--bg);
+    min-height:100vh; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  /* ---------- Header ---------- */
+  header{padding:46px 0 18px;text-align:center;position:relative}
+  .eyebrow{font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;color:var(--pink);font-weight:500;margin-bottom:10px}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(2.4rem,6vw,3.6rem);line-height:1.02;margin:0;letter-spacing:-.01em}
+  h1 em{font-style:italic;color:var(--pink)}
+  .sub{color:var(--ink-soft);margin-top:12px;font-size:1.02rem;font-weight:300}
+
+  /* ---------- Banner de status ---------- */
+  .banner{max-width:740px;margin:22px auto 0;border-radius:14px;padding:12px 16px;font-size:.9rem;
+    display:flex;gap:10px;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--card)}
+  .banner .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .banner.demo{background:#fff7e8;border-color:#f1dcae;color:#8a6a1f}
+  .banner.demo .dot{background:#e0a02a}
+  .banner.live{background:var(--green-soft);border-color:#abe0c8;color:#0f6a48}
+  .banner.live .dot{background:var(--green)}
+  .banner.empty{background:var(--pink-tint);border-color:var(--pink-soft);color:#a01e4d}
+  .banner.empty .dot{background:var(--pink)}
+
+  /* ---------- Stats ---------- */
+  .stats{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:24px 0 10px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 18px;text-align:center;min-width:92px;box-shadow:var(--shadow-sm)}
+  .stat b{font-family:'Fraunces',serif;font-size:1.5rem;display:block;line-height:1}
+  .stat span{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+
+  /* ---------- Controls ---------- */
+  .controls{position:sticky;top:0;z-index:30;padding:16px 0 14px;margin-top:14px;
+    background:linear-gradient(var(--bg) 60%, rgba(251,243,240,0));}
+  .searchbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+    border-radius:999px;padding:13px 20px;box-shadow:var(--shadow);max-width:560px;margin:0 auto}
+  .searchbar svg{flex:none;color:var(--ink-soft)}
+  .searchbar input{border:0;outline:0;background:transparent;font:inherit;font-size:1.05rem;width:100%;color:var(--ink)}
+  .searchbar input::placeholder{color:var(--ink-soft)}
+  .filters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+  .chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 15px;font:inherit;
+    font-size:.86rem;cursor:pointer;color:var(--ink-soft);display:flex;gap:7px;align-items:center;transition:.18s}
+  .chip:hover{border-color:var(--pink-soft);color:var(--ink)}
+  .chip .n{font-size:.74rem;background:var(--slate-soft);color:var(--ink-soft);border-radius:999px;padding:1px 7px}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip.active .n{background:rgba(255,255,255,.22);color:#fff}
+
+  /* ---------- Grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;padding:8px 0 60px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:transform .22s,box-shadow .22s;
+    animation:rise .5s both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .card.disliked{filter:saturate(.55);opacity:.82}
+
+  .thumb{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb .ph{width:100%;height:100%}
+  .addphoto{position:absolute;left:10px;bottom:10px;border:0;background:rgba(255,255,255,.86);
+    backdrop-filter:blur(6px);border-radius:999px;padding:6px 11px;font:inherit;font-size:.74rem;color:var(--ink);
+    cursor:pointer;display:flex;gap:5px;align-items:center;box-shadow:var(--shadow-sm);opacity:0;transition:.18s}
+  .card:hover .addphoto{opacity:1}
+  .tagchip{position:absolute;right:10px;top:10px;background:#2b3a55;color:#fff;border-radius:999px;
+    padding:3px 10px;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}
+  .ownedflag{position:absolute;right:10px;top:10px;background:var(--green);color:#fff;border-radius:999px;
+    width:26px;height:26px;display:none;align-items:center;justify-content:center;box-shadow:var(--shadow-sm)}
+  .card.owned .ownedflag{display:flex}
+  .card.owned.has-tag .ownedflag{top:42px}
+
+  .body{padding:14px 15px 15px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .name{font-family:'Fraunces',serif;font-size:1.12rem;line-height:1.15;font-weight:600}
+  .prods{display:flex;flex-wrap:wrap;gap:5px}
+  .prod{font-size:.68rem;color:var(--ink-soft);background:var(--bg2);border-radius:6px;padding:2px 7px}
+  .actions{display:flex;gap:8px;margin-top:auto;padding-top:4px}
+  .btn{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 0;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:.16s;color:var(--ink-soft)}
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{transform:scale(.92)}
+  .btn svg{width:20px;height:20px}
+  .btn.like.on{background:var(--pink);border-color:var(--pink);color:#fff}
+  .btn.dislike.on{background:var(--slate);border-color:var(--slate);color:#fff}
+  .btn.own.on{background:var(--green);border-color:var(--green);color:#fff}
+
+  .empty-state{text-align:center;color:var(--ink-soft);padding:60px 20px;font-size:1.05rem}
+
+  footer{text-align:center;padding:24px 0 50px;color:var(--ink-soft);font-size:.82rem}
+  footer button{background:none;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font:inherit;
+    font-size:.8rem;color:var(--ink-soft);cursor:pointer}
+  footer button:hover{border-color:var(--pink-soft);color:var(--pink)}
+
+  /* ---------- Sync ---------- */
+  .syncbar{display:flex;justify-content:center;margin-top:14px}
+  .syncbtn{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--pink-soft);background:var(--card);
+    color:var(--pink);border-radius:999px;padding:10px 18px;font:inherit;font-size:.92rem;cursor:pointer;
+    box-shadow:var(--shadow-sm);transition:.18s}
+  .syncbtn:hover{background:var(--pink);color:#fff;border-color:var(--pink)}
+  .syncbtn:disabled{opacity:.6;cursor:default}
+  .syncbtn svg{width:17px;height:17px}
+  .syncbtn.spin svg{animation:rot 1s linear infinite}
+  @keyframes rot{to{transform:rotate(360deg)}}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);
+    color:#fff;padding:13px 20px;border-radius:14px;box-shadow:var(--shadow);font-size:.95rem;opacity:0;
+    pointer-events:none;transition:.25s;z-index:80;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- Modal ---------- */
+  .modal-bg{position:fixed;inset:0;background:rgba(40,18,30,.45);backdrop-filter:blur(3px);display:none;
+    align-items:center;justify-content:center;z-index:60;padding:20px}
+  .modal-bg.open{display:flex}
+  .modal{background:var(--card);border-radius:18px;padding:24px;max-width:420px;width:100%;box-shadow:var(--shadow)}
+  .modal h3{font-family:'Fraunces',serif;margin:0 0 4px;font-size:1.3rem}
+  .modal p{margin:0 0 14px;color:var(--ink-soft);font-size:.9rem}
+  .modal input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;outline:0}
+  .modal input:focus{border-color:var(--pink)}
+  .modal .row{display:flex;gap:9px;margin-top:16px}
+  .modal .row button{flex:1;border-radius:12px;padding:11px;font:inherit;font-size:.95rem;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
+  .modal .row .save{background:var(--pink);border-color:var(--pink);color:#fff}
+  .modal .row .remove{color:var(--slate)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Coleção de Perfumes</div>
+      <h1>Minha estante <em>WePink</em></h1>
+      <p class="sub">Curta, descarte e marque o que você já tem — tudo salvo na nuvem.</p>
+      <div id="banner" class="banner"><span class="dot"></span><span id="banner-text">Carregando…</span></div>
+      <div class="stats" id="stats"></div>
+      <div class="syncbar">
+        <button class="syncbtn" id="sync">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v5h-5"/></svg>
+          <span id="sync-label">Buscar novos perfumes na WePink</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="controls">
+      <div class="searchbar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="search" type="text" placeholder="Buscar perfume…" autocomplete="off" />
+      </div>
+      <div class="filters" id="filters"></div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <footer>
+      <p style="margin:0 0 12px">Lista pessoal · feita com carinho 🩷</p>
+      <button id="reset">↺ Restaurar avaliações originais da lista</button>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Modal foto -->
+  <div class="modal-bg" id="modalbg">
+    <div class="modal">
+      <h3 id="modal-title">Foto do perfume</h3>
+      <p>Cole o link (URL) de uma imagem do perfume. Dica: clique com o botão direito numa foto no site da WePink → “Copiar endereço da imagem”.</p>
+      <input id="modal-input" type="url" placeholder="https://…" />
+      <div class="row">
+        <button class="remove" id="modal-remove">Remover</button>
+        <button id="modal-cancel">Cancelar</button>
+        <button class="save" id="modal-save">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO — cole aqui as 2 chaves do seu projeto Supabase.
+   (Supabase → Project Settings → Data API / API Keys)
+   Enquanto estiverem com "COLE_...", o site roda em modo demonstração.
+   ============================================================ */
+const SUPABASE_URL = "sb_publishable_66dMBH9QRIFRBaLc3c3pxg__tt9Whsb";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJiYWhpZmd1eXZvZHduaGN1a296Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4NTYxMTUsImV4cCI6MjA5ODQzMjExNX0.eSjUBhEbPuOXluQRbJlbUlzIFqxuaAEEgpDJyLrxpl4";
+
+/* Dados iniciais (também usados no modo demonstração) */
+const SEED = [{"name":"VF","reaction":"like","owned":true,"products":["Perfume","Óleo","Creme","Roll-on"],"tag":null},{"name":"VF Aqua","reaction":"like","owned":true,"products":["Perfume","Óleo","Creme"],"tag":null},{"name":"VF Choices","reaction":"like","owned":true,"products":["Perfume","Creme"],"tag":null},{"name":"VF Choices Delight","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"VF Bloom","reaction":"like","owned":true,"products":["Perfume"],"tag":null},{"name":"VF Ballet","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"VF Golden","reaction":"like","owned":false,"products":["Perfume","Óleo","Creme","Scrub"],"tag":null},{"name":"VF Seduce","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"VF Onyx","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"VF 2.7","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"VF Tropical","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"VF Honey","reaction":"dislike","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Obssesed","reaction":"like","owned":true,"products":["Perfume","Óleo","Creme","Roll-on","Hair mist"],"tag":null},{"name":"Obssesed Gold","reaction":"like","owned":true,"products":["Perfume","Creme","Óleo"],"tag":null},{"name":"Obssesed Deluxe","reaction":"like","owned":true,"products":["Perfume"],"tag":null},{"name":"Obssesed Exclusive Pink","reaction":"like","owned":true,"products":["Perfume"],"tag":null},{"name":"Obsessed Intense","reaction":"like","owned":true,"products":["Perfume"],"tag":null},{"name":"Obsessed Lovely","reaction":"like","owned":true,"products":["Perfume","Creme"],"tag":null},{"name":"Liberté","reaction":"like","owned":true,"products":["Perfume","Óleo","Creme","Roll-on","Hair mist","Scrub"],"tag":null},{"name":"Liberté Nuit","reaction":"like","owned":true,"products":["Perfume"],"tag":null},{"name":"Liberté Exclusif","reaction":"like","owned":true,"products":["Perfume","Creme","Scrub"],"tag":null},{"name":"Liberté Platiné","reaction":"like","owned":true,"products":["Perfume"],"tag":null},{"name":"Liberté Doré","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Red","reaction":"like","owned":true,"products":["Perfume","Óleo","Creme","Roll-on","Hair mist","Scrub"],"tag":null},{"name":"Red Obsidian","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Red Mirage","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Pureblixx","reaction":"like","owned":true,"products":["Perfume","Óleo","Creme"],"tag":null},{"name":"Pureblixx Mauve","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Pureblixx Darkest","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"One Touch","reaction":"like","owned":false,"products":["Perfume","Óleo","Creme"],"tag":null},{"name":"One Touch Silk","reaction":"like","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"One Touch Warm","reaction":"dislike","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"One Touch Latte","reaction":"none","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Infinity","reaction":"like","owned":false,"products":["Perfume","Óleo","Creme","Roll-on"],"tag":null},{"name":"Infinity Star","reaction":"like","owned":false,"products":["Perfume","Óleo","Creme"],"tag":null},{"name":"Infinity Crystal","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Infinity Cosmik","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Infinity Xis","reaction":"like","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Infinity Plim","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Infinity Tawny","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Celebrate Luck","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Celebrate Relics","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Celebrate Sunset","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Celebrate Life","reaction":"dislike","owned":false,"products":["Perfume","Óleo","Creme","Roll-on"],"tag":null},{"name":"Celebrate Happy","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Perfect Pear","reaction":"like","owned":false,"products":["Perfume","Creme","Óleo","Roll-on","Scrub"],"tag":null},{"name":"Pure Pear","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"The Lover","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"The Rainy","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"The Sunny","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Universe Moon","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Universe Earth","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Heaven Groom","reaction":"like","owned":false,"products":["Perfume"],"tag":"Masc"},{"name":"Heaven Bride","reaction":"like","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Heaven","reaction":"dislike","owned":false,"products":["Perfume","Hair mist"],"tag":null},{"name":"Heaven Blue","reaction":"dislike","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Heaven Santal & Fig","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Fatal Rouge","reaction":"like","owned":false,"products":["Perfume","Creme","Scrub","Roll-on"],"tag":null},{"name":"Fatal Black","reaction":"dislike","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Fatal White","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Le Grand Club Little Angel","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Le Grand Club Sweet Lady","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Le Grand Club Secret Lover","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Changes","reaction":"like","owned":false,"products":["Perfume","Creme","Roll-on"],"tag":null},{"name":"Queen Pink","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Merry Christmas","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Happy New Year","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Auretex","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Scarlette","reaction":"like","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Fusion For Her","reaction":"none","owned":false,"products":["Perfume","Óleo","Creme"],"tag":null},{"name":"Wonderful","reaction":"like","owned":false,"products":["Perfume","Óleo"],"tag":null},{"name":"Crimson Seraph","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Ember Divinus","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Ghadan","reaction":"none","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Martin","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Feive","reaction":"dislike","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Feive Celestial","reaction":"like","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Yahya Sadeeq","reaction":"none","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Haylas","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Flora Whisper","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Wonbloom","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Wonbloom Charm","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Crave","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Crave Lovely","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"4 Dreams","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Pink","reaction":"dislike","owned":false,"products":["Perfume","Óleo","Creme"],"tag":null},{"name":"Purple","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Divine","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Ruby","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null},{"name":"Ruby Ametist","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Ruby Rhodolite","reaction":"none","owned":false,"products":["Perfume","Creme"],"tag":null},{"name":"Lauv Green","reaction":"like","owned":false,"products":["Perfume"],"tag":"Masc"},{"name":"My We Belle","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Verano Di Capri","reaction":"like","owned":false,"products":["Perfume"],"tag":null},{"name":"Latina","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Eternal Cherish","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Velours Pourpre","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Cassera","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Ever Strong","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Castillo","reaction":"none","owned":false,"products":["Perfume"],"tag":null},{"name":"Elowen","reaction":"dislike","owned":false,"products":["Perfume"],"tag":null}];
+
+/* ---------- ícones ---------- */
+const IC = {
+  like:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.3 8.4 1.7 4.8 5 4.1 7 3.7 8.9 4.6 10 6.1 11.1 4.6 13 3.7 15 4.1c3.3.7 4.7 4.3 3 7.6C19.5 16.4 12 21 12 21z"/></svg>',
+  dislike:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 6.1C11 4.6 9.1 3.7 7 4.1 3.7 4.8 2.3 8.4 4 11.7c.6 1.1 1.6 2.2 2.7 3.2l4.1-4.1-2.3-2.3 1.4-1.4L12 9.4l2.1-2.1 1.4 1.4-2.3 2.3 4.7 4.7c1.7-1.7 3.4-3.7 4.1-5.4 1.5-3-.1-6.5-3-7.2-2-.4-3.9.5-5 2zM12 21s-2.6-1.6-5.4-4.2L11 12.4l1 1 .7-.7 5.6 5.6C15.6 20 12 21 12 21z"/></svg>',
+  own:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  camera:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.2"/></svg>',
+};
+
+/* ---------- estado ---------- */
+let MODE = 'demo';          // 'demo' | 'live' | 'empty'
+let client = null;
+let items = [];
+let activeFilter = 'todos';
+let searchText = '';
+let modalItem = null;
+
+const FILTERS = [
+  {id:'todos', label:'Todos'},
+  {id:'like', label:'❤️ Curti'},
+  {id:'dislike', label:'💔 Não curti'},
+  {id:'owned', label:'✅ Tenho'},
+  {id:'wish', label:'🛒 Quero comprar'},
+  {id:'none', label:'⚪ Não avaliados'},
+];
+
+/* ---------- util ---------- */
+const norm = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+function isConfigured(){
+  return SUPABASE_URL && !SUPABASE_URL.includes('COLE_') &&
+         SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('COLE_');
+}
+function seedToItems(){
+  return SEED.map((s,i)=>({id:i+1, position:i+1, name:s.name, products:s.products,
+    reaction:(s.reaction==='none'?null:s.reaction), owned:!!s.owned, photo_url:null, tag:s.tag||null}));
+}
+function loadLib(){
+  return new Promise((res,rej)=>{
+    if(window.supabase) return res();
+    const sc=document.createElement('script');
+    sc.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    sc.onload=res; sc.onerror=rej; document.head.appendChild(sc);
+  });
+}
+
+/* ---------- gradiente do placeholder (varia por nome) ---------- */
+function hueFor(name){let h=0;for(const c of name)h=(h*31+c.charCodeAt(0))%360;return h;}
+function placeholder(name){
+  const h=hueFor(name), h2=(h+34)%360;
+  return `<svg class="ph" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g${h}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="hsl(${h} 70% 88%)"/><stop offset="1" stop-color="hsl(${h2} 65% 76%)"/>
+    </linearGradient></defs>
+    <rect width="200" height="200" fill="url(#g${h})"/>
+    <g fill="none" stroke="hsl(${h} 45% 38%)" stroke-opacity=".55" stroke-width="3">
+      <rect x="78" y="74" width="44" height="74" rx="12"/>
+      <rect x="90" y="58" width="20" height="18" rx="4" fill="hsl(${h} 45% 38%)" fill-opacity=".25"/>
+      <rect x="92" y="46" width="16" height="14" rx="3"/>
+      <line x1="78" y1="100" x2="122" y2="100"/>
+    </g>
+  </svg>`;
+}
+
+/* ---------- render ---------- */
+function computeStats(){
+  const s={total:items.length,like:0,dislike:0,owned:0,none:0,wish:0};
+  for(const it of items){
+    if(it.reaction==='like')s.like++;
+    else if(it.reaction==='dislike')s.dislike++;
+    else s.none++;
+    if(it.owned)s.owned++;
+    if(it.reaction==='like' && !it.owned)s.wish++;
+  }
+  return s;
+}
+function passesFilter(it){
+  switch(activeFilter){
+    case'like':return it.reaction==='like';
+    case'dislike':return it.reaction==='dislike';
+    case'owned':return it.owned;
+    case'wish':return it.reaction==='like' && !it.owned;
+    case'none':return !it.reaction;
+    default:return true;
+  }
+}
+function renderStats(){
+  const s=computeStats();
+  const cells=[['total','Total'],['like','Curtidos'],['owned','Tenho'],['wish','Quero'],['none','A avaliar']];
+  document.getElementById('stats').innerHTML=cells.map(([k,l])=>
+    `<div class="stat"><b>${s[k]}</b><span>${l}</span></div>`).join('');
+}
+function renderFilters(){
+  const s=computeStats();
+  const counts={todos:s.total,like:s.like,dislike:s.dislike,owned:s.owned,wish:s.wish,none:s.none};
+  document.getElementById('filters').innerHTML=FILTERS.map(f=>
+    `<button class="chip ${activeFilter===f.id?'active':''}" data-f="${f.id}">${f.label}<span class="n">${counts[f.id]}</span></button>`).join('');
+}
+function render(){
+  renderStats(); renderFilters();
+  const grid=document.getElementById('grid');
+  const q=norm(searchText);
+  const ordered=[...items].sort((a,b)=>(a.position-b.position)||a.name.localeCompare(b.name,'pt'));
+  const list=ordered.filter(it=>passesFilter(it) && (!q || norm(it.name).includes(q)));
+  if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1">Nenhum perfume encontrado 🔎</div>`;return;}
+  grid.innerHTML=list.map((it,i)=>{
+    const liked=it.reaction==='like', disliked=it.reaction==='dislike';
+    const photo=it.photo_url?`<img src="${it.photo_url}" alt="${it.name}" onerror="this.outerHTML=window.__ph('${it.name.replace(/'/g,"\\'")}')">`:placeholder(it.name);
+    return `<div class="card ${disliked?'disliked':''} ${it.owned?'owned':''} ${it.tag?'has-tag':''}" style="animation-delay:${Math.min(i*22,420)}ms">
+      <div class="thumb">
+        ${photo}
+        ${it.tag?`<span class="tagchip">${it.tag}</span>`:''}
+        <span class="ownedflag">${IC.own}</span>
+        <button class="addphoto" data-photo="${it.id}">${IC.camera} foto</button>
+      </div>
+      <div class="body">
+        <div class="name">${it.name}</div>
+        <div class="prods">${(it.products||[]).map(p=>`<span class="prod">${p}</span>`).join('')}</div>
+        <div class="actions">
+          <button class="btn like ${liked?'on':''}" data-act="like" data-id="${it.id}" title="Curti">${IC.like}</button>
+          <button class="btn dislike ${disliked?'on':''}" data-act="dislike" data-id="${it.id}" title="Não curti">${IC.dislike}</button>
+          <button class="btn own ${it.owned?'on':''}" data-act="own" data-id="${it.id}" title="Já tenho">${IC.own}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+window.__ph = placeholder; // fallback p/ imagem quebrada
+
+/* ---------- ações ---------- */
+async function persist(it, patch){
+  if(MODE!=='live' || !client) return;
+  try{ await client.from('perfumes').update(patch).eq('id', it.id); }
+  catch(e){ console.error('Erro ao salvar no Supabase:', e); }
+}
+function toggle(id, act){
+  const it=items.find(x=>String(x.id)===String(id)); if(!it)return;
+  let patch={};
+  if(act==='like'){ it.reaction = it.reaction==='like'?null:'like'; patch.reaction=it.reaction; }
+  else if(act==='dislike'){ it.reaction = it.reaction==='dislike'?null:'dislike'; patch.reaction=it.reaction; }
+  else if(act==='own'){ it.owned=!it.owned; patch.owned=it.owned; }
+  persist(it, patch);
+  render();
+}
+
+/* ---------- banner ---------- */
+function setBanner(){
+  const b=document.getElementById('banner'), t=document.getElementById('banner-text');
+  b.className='banner '+(MODE==='live'?'live':MODE==='empty'?'empty':'demo');
+  t.textContent =
+    MODE==='live' ? 'Conectado ao Supabase — suas alterações ficam salvas ✓' :
+    MODE==='empty'? 'Conectado, mas a tabela está vazia. Rode o arquivo supabase.sql no Supabase.' :
+                    'Modo demonstração — configure o Supabase no topo do código para salvar de verdade.';
+}
+
+/* ---------- modal foto ---------- */
+const mb=document.getElementById('modalbg');
+function openModal(id){
+  modalItem=items.find(x=>String(x.id)===String(id)); if(!modalItem)return;
+  document.getElementById('modal-title').textContent='Foto · '+modalItem.name;
+  document.getElementById('modal-input').value=modalItem.photo_url||'';
+  mb.classList.add('open'); document.getElementById('modal-input').focus();
+}
+function closeModal(){mb.classList.remove('open');modalItem=null;}
+document.getElementById('modal-cancel').onclick=closeModal;
+mb.onclick=e=>{if(e.target===mb)closeModal();};
+document.getElementById('modal-save').onclick=()=>{
+  if(!modalItem)return;
+  const url=document.getElementById('modal-input').value.trim();
+  modalItem.photo_url=url||null; persist(modalItem,{photo_url:modalItem.photo_url}); closeModal(); render();
+};
+document.getElementById('modal-remove').onclick=()=>{
+  if(!modalItem)return;
+  modalItem.photo_url=null; persist(modalItem,{photo_url:null}); closeModal(); render();
+};
+
+/* ---------- eventos ---------- */
+document.getElementById('grid').addEventListener('click',e=>{
+  const a=e.target.closest('[data-act]'); if(a){toggle(a.dataset.id,a.dataset.act);return;}
+  const p=e.target.closest('[data-photo]'); if(p){openModal(p.dataset.photo);}
+});
+document.getElementById('filters').addEventListener('click',e=>{
+  const c=e.target.closest('[data-f]'); if(!c)return; activeFilter=c.dataset.f; render();
+});
+document.getElementById('search').addEventListener('input',e=>{searchText=e.target.value;render();});
+document.getElementById('reset').onclick=async()=>{
+  if(!confirm('Restaurar as curtidas/descurtidas e "tenho" para o estado original da lista? (As fotos são mantidas)'))return;
+  const seed=seedToItems();
+  for(const it of items){
+    const s=seed.find(x=>x.name===it.name);
+    if(s){it.reaction=s.reaction;it.owned=s.owned;
+      if(MODE==='live')await persist(it,{reaction:it.reaction,owned:it.owned});}
+  }
+  render();
+};
+
+/* ---------- toast ---------- */
+let toastT=null;
+function toast(msg){
+  const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),3600);
+}
+
+/* ---------- sincronizar catálogo (puxa fotos + novos perfumes da WePink) ---------- */
+async function syncCatalog(){
+  const btn=document.getElementById('sync'), lbl=document.getElementById('sync-label');
+  if(MODE==='demo'){ toast('Disponível depois de publicar na Vercel e configurar o Supabase 💖'); return; }
+  btn.disabled=true; btn.classList.add('spin'); lbl.textContent='Buscando na WePink…';
+  try{
+    const r=await fetch('/api/sync',{method:'POST'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j=await r.json();
+    // recarrega do banco
+    const {data}=await client.from('perfumes').select('*').order('position',{ascending:true});
+    if(data){ items=data; render(); }
+    const novos=j.novos||0, fotos=j.fotos||j.atualizados||0;
+    toast(`Pronto! ${novos} novo(s) perfume(s) e ${fotos} foto(s) atualizada(s) ✨`);
+  }catch(e){
+    console.error(e);
+    toast('Não consegui sincronizar agora. Confira se a função /api/sync foi publicada.');
+  }finally{
+    btn.disabled=false; btn.classList.remove('spin'); lbl.textContent='Buscar novos perfumes na WePink';
+  }
+}
+document.getElementById('sync').onclick=syncCatalog;
+
+/* ---------- init ---------- */
+async function init(){
+  if(isConfigured()){
+    try{
+      await loadLib();
+      client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+      const {data,error}=await client.from('perfumes').select('*').order('position',{ascending:true});
+      if(error)throw error;
+      if(data&&data.length){items=data;MODE='live';}
+      else{items=seedToItems();MODE='empty';}
+    }catch(e){console.error('Falha ao conectar no Supabase, usando modo demo:',e);items=seedToItems();MODE='demo';}
+  }else{items=seedToItems();MODE='demo';}
+  setBanner(); render();
+}
+init();
+</script>
+</body>
+</html>
