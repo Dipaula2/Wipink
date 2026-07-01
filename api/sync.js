@@ -1,14 +1,4 @@
-// =====================================================================
-//  /api/sync  ·  Robô de sincronização WePink → Supabase
-//  - É chamado 1x por dia pela Vercel (cron) e também pelo botão do site.
-//  - Vai na API pública do catálogo da WePink (VTEX), pega fotos e
-//    lançamentos novos, e grava no seu banco do Supabase.
-//  - Não precisa instalar nada: usa só recursos nativos do Node.
-//
-//  Variáveis de ambiente necessárias (configurar na Vercel):
-//    SUPABASE_URL          -> a mesma Project URL do site
-//    SUPABASE_SERVICE_KEY  -> a chave "service_role" (secreta!) do Supabase
-// =====================================================================
+
 
 const VTEX_CATEGORY = 'perfumaria'; // categoria de perfumes na WePink
 const SB  = process.env.SUPABASE_URL;
