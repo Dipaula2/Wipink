@@ -105,19 +105,17 @@ module.exports = async (req, res) => {
       return res.status(502).json({ error: 'Nenhum produto recebido da WePink (a API pode ter mudado).' });
     }
     const have = await existingSlugs();
+    const novos = products.filter(p => !have.has(p.slug)).length;
 
-    // existentes -> atualiza só foto e link (mantém suas curtidas, nomes e "tenho")
-    const updates = products.filter(p => have.has(p.slug))
-      .map(p => ({ slug: p.slug, photo_url: p.photo_url, vtex_link: p.vtex_link }));
+    // Um único upsert, com 'name' em TODAS as linhas (a coluna é obrigatória):
+    //  - slug já existente -> atualiza nome/foto/link (mantém curtidas, "tenho", produtos e ordem)
+    //  - slug novo         -> entra como "a avaliar" no fim da lista
+    const payload = products.map(p => ({
+      slug: p.slug, name: p.name, photo_url: p.photo_url, vtex_link: p.vtex_link,
+    }));
+    await upsert(payload);
 
-    // novos -> entram como "a avaliar"
-    const inserts = products.filter(p => !have.has(p.slug))
-      .map(p => ({ slug: p.slug, name: p.name, photo_url: p.photo_url, vtex_link: p.vtex_link, products: ['Perfume'] }));
-
-    await upsert(updates);
-    await upsert(inserts);
-
-    return res.status(200).json({ ok: true, total: products.length, novos: inserts.length, fotos: updates.length });
+    return res.status(200).json({ ok: true, total: products.length, novos, fotos: products.length - novos });
   } catch (e) {
     return res.status(500).json({ error: String((e && e.message) || e) });
   }
