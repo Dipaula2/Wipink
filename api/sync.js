@@ -31,6 +31,12 @@ function extractName(pn) {
     .trim();
 }
 
+// Deixa a imagem menor/mais leve (melhor p/ celular): pede ~500px na CDN da VTEX
+function resize(url) {
+  if (!url) return url;
+  return url.replace(/\/arquivos\/ids\/(\d+)(-\d+-\w+)?/i, '/arquivos/ids/$1-500-500');
+}
+
 // ---------- WePink (VTEX) ----------
 async function fetchWePink() {
   const out = [];
@@ -53,7 +59,7 @@ async function fetchWePink() {
       out.push({
         slug: slugify(name),
         name,
-        photo_url: img.imageUrl || null,
+        photo_url: resize(img.imageUrl) || null,
         vtex_link: p.link || (p.linkText ? `https://www.wepink.com.br/${p.linkText}/p` : null),
       });
     }
